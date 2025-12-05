@@ -62,7 +62,7 @@ export function Sidebar({
           {isConnected && sessionId && (
             <div className="session-info">
               <div className="session-label">Session ID</div>
-              <code className="session-id">{sessionId.slice(0, 8)}...</code>
+              <code className="session-id">{sessionId.slice(0, 26)}...</code>
             </div>
           )}
         </div>

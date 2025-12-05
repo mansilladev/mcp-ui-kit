@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { generateMockStockData } from './stock-utils';
-import { callTool, sendPrompt, useProps } from '../../library/ui';
+import { callTool, sendPrompt, useProps } from '@mcp-ui/library/ui';
 
 
 // Types for props passed from the tool handler
@@ -74,7 +74,7 @@ Please analyze this portfolio and provide recommendations.`;
         {/* Header */}
         <div className="header">
           <div>
-            <h1>📈 Stock Portfolio!!</h1>
+            <h1>📈 Stock Portfolio</h1>
             <p className="subtitle">Timeframe: {props.timeframe} • {stocks.length} stocks</p>
           </div>
           <div className="portfolio-summary">

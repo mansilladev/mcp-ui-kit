@@ -19,7 +19,7 @@
 }
 
 .tool-count {
-  background: var(--bg-hover);
+  background: rgba(255, 255, 255, 0.1);
   padding: 2px 8px;
   border-radius: 10px;
   font-size: 11px;
@@ -165,7 +165,8 @@
 
 .json-editor {
   width: 100%;
-  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+    monospace;
   font-size: 12px;
   background: var(--bg-primary);
   border: 1px solid var(--border-color);
@@ -240,7 +241,9 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @media (max-width: 1200px) {

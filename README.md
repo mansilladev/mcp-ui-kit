@@ -57,8 +57,22 @@ function MyComponent() {
 
 **`createUI(name, entryUrl)`** - Creates a UI component
 - `name`: Component identifier
-- `entryUrl`: Path from `import.meta.resolve()`
+- `entryUrl`: Path to the component entry file
 - Returns: `{ component(opts?) }` where opts: `{ props?, frameSize? }`
+
+The `entryUrl` parameter accepts both formats:
+
+```typescript
+// ESM (recommended) - using import.meta.resolve()
+// Requires "type": "module" in package.json
+createUI('dashboard', import.meta.resolve('./MyComponent.tsx'));
+
+// CommonJS - using require.resolve() or absolute paths
+createUI('dashboard', require.resolve('./MyComponent.tsx'));
+createUI('dashboard', path.join(__dirname, './MyComponent.tsx'));
+```
+
+The library automatically converts `file://` URLs to file paths, so both approaches work seamlessly.
 
 ### UI (`@mcp-ui/library/ui`)
 

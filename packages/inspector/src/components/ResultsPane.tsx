@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Monitor, FileText, Clock, AlertTriangle, Maximize2, Minimize2 } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Monitor, FileText, Clock, AlertTriangle, Maximize2, Minimize2, RotateCw } from 'lucide-react'
 import { Button } from './Button'
 import type { ToolResult } from '../App'
 import './ResultsPane.css'
@@ -7,37 +7,46 @@ import './ResultsPane.css'
 interface ResultsPaneProps {
   result: ToolResult | null
   isExecuting: boolean
+  onReload?: () => void
 }
 
 type Tab = 'ui' | 'text'
 
-export function ResultsPane({ result, isExecuting }: ResultsPaneProps) {
+export function ResultsPane({ result, isExecuting, onReload }: ResultsPaneProps) {
   const [activeTab, setActiveTab] = useState<Tab>('ui')
   const [isFullscreen, setIsFullscreen] = useState(false)
 
   const hasUI = result?.htmlContent != null
   const hasText = result?.textContent != null
 
+  useEffect(() => {
+    if (hasUI) {
+      setActiveTab('ui')
+    } else if (hasText) {
+      setActiveTab('text')
+    }
+  }, [hasText, hasUI])
+
   return (
     <div className={`results-pane ${isFullscreen ? 'fullscreen' : ''}`}>
       <div className="panel-header">
         <div className="results-tabs">
-          <Button
+          <button
             className={`tab ${activeTab === 'ui' ? 'active' : ''}`}
             onClick={() => setActiveTab('ui')}
-            icon={<Monitor size={14} />}
           >
-            UI Output
-            {hasUI && <span className="tab-badge">✓</span>}
-          </Button>
-          <Button
+            <Monitor size={14} />
+            UI
+            <span className={`tab-badge ${hasUI ? 'active' : ''}`} />
+          </button>
+          <button
             className={`tab ${activeTab === 'text' ? 'active' : ''}`}
             onClick={() => setActiveTab('text')}
-            icon={<FileText size={14} />}
           >
-            Text Response
-            {hasText && <span className="tab-badge">✓</span>}
-          </Button>
+            <FileText size={14} />
+            Text
+            <span className={`tab-badge ${hasText ? 'active' : ''}`} />
+          </button>
         </div>
 
         <div className="results-actions">
@@ -46,6 +55,15 @@ export function ResultsPane({ result, isExecuting }: ResultsPaneProps) {
               <Clock size={12} />
               {result.timestamp.toLocaleTimeString()}
             </span>
+          )}
+          {onReload && (
+            <Button
+              variant="ghost"
+              onClick={onReload}
+              disabled={isExecuting}
+              title="Reload"
+              icon={<RotateCw size={14} />}
+            />
           )}
           <Button
             variant="ghost"

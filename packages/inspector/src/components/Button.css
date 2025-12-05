@@ -9,16 +9,17 @@
   font-size: 13px;
   font-weight: 500;
   border-radius: 6px;
-  border: 1px solid var(--border-color);
-  background: var(--bg-tertiary);
+  background: var(--bg-black);
   color: var(--text-primary);
   cursor: pointer;
   transition: all 0.15s ease;
   white-space: nowrap;
+  border: none;
+  outline: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .btn:hover:not(:disabled) {
-  background: var(--bg-hover);
+  box-shadow: 0 0 10px 1px rgba(255, 255, 255, 0.3);
 }
 
 .btn:disabled {
@@ -28,14 +29,8 @@
 
 /* Primary Variant */
 .btn-primary {
-  background: var(--accent-blue);
-  border-color: var(--accent-blue);
-  color: white;
-}
-
-.btn-primary:hover:not(:disabled) {
-  background: #4c9aed;
-  border-color: #4c9aed;
+  background: var(--white);
+  color: black;
 }
 
 /* Ghost Variant (icon buttons) */
@@ -43,11 +38,6 @@
   background: transparent;
   border-color: transparent;
   padding: 6px;
-}
-
-.btn-ghost:hover:not(:disabled) {
-  background: var(--bg-hover);
-  border-color: transparent;
 }
 
 /* Loading State */

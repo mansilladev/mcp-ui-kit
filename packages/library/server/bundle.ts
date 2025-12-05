@@ -1,10 +1,13 @@
 import * as esbuild from 'esbuild';
 
-// Cache bundled JS per entry path
+// Cache bundled JS per entry path (only used in production)
 const bundleCache = new Map<string, string>();
 
+// In development mode, skip cache to allow hot-reloading of component changes
+const isDev = process.env.NODE_ENV !== 'production';
+
 export async function bundleComponent(entryPath: string): Promise<string> {
-    if (bundleCache.has(entryPath)) {
+    if (!isDev && bundleCache.has(entryPath)) {
         return bundleCache.get(entryPath)!;
     }
 
@@ -23,6 +26,11 @@ export async function bundleComponent(entryPath: string): Promise<string> {
     });
 
     const bundledJS = result.outputFiles[0].text;
-    bundleCache.set(entryPath, bundledJS);
+
+    // Only cache in production mode
+    if (!isDev) {
+        bundleCache.set(entryPath, bundledJS);
+    }
+
     return bundledJS;
 }

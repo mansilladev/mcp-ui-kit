@@ -4,6 +4,7 @@ import { ToolsPanel } from './components/ToolsPanel'
 import { ResultsPane } from './components/ResultsPane'
 import { useMCP } from './hooks/useMCP'
 import './App.css'
+import { Eye, Sparkles } from 'lucide-react'
 
 export type Tool = {
   name: string
@@ -29,20 +30,21 @@ export type ToolResult = {
 
 function App() {
   const [serverUrl, setServerUrl] = useState('http://localhost:3000/mcp')
-  const { 
-    isConnected, 
-    isConnecting, 
-    sessionId, 
-    tools, 
-    connect, 
+  const {
+    isConnected,
+    isConnecting,
+    sessionId,
+    tools,
+    connect,
     disconnect,
     callTool,
-    error 
+    error
   } = useMCP()
 
   const [selectedTool, setSelectedTool] = useState<Tool | null>(null)
   const [toolResult, setToolResult] = useState<ToolResult | null>(null)
   const [isExecuting, setIsExecuting] = useState(false)
+  const [lastExecution, setLastExecution] = useState<{ toolName: string; params: Record<string, unknown> } | null>(null)
 
   const handleConnect = useCallback(async () => {
     if (isConnected) {
@@ -57,7 +59,8 @@ function App() {
   const handleExecuteTool = useCallback(async (toolName: string, params: Record<string, unknown>) => {
     setIsExecuting(true)
     setToolResult(null)
-    
+    setLastExecution({ toolName, params })
+
     try {
       const result = await callTool(toolName, params)
       setToolResult({
@@ -76,15 +79,16 @@ function App() {
     }
   }, [callTool])
 
+  const handleReload = useCallback(async () => {
+    if (lastExecution) {
+      await handleExecuteTool(lastExecution.toolName, lastExecution.params)
+    }
+  }, [lastExecution, handleExecuteTool])
+
   return (
     <div className="app">
       <header className="header">
-        <div className="header-brand">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M2 17L12 22L22 17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M2 12L12 17L22 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
+        <div className="header-brand" onClick={() => window.location.reload()}>
           <h1>MCP UI Inspector</h1>
         </div>
         <div className="header-status">
@@ -127,6 +131,7 @@ function App() {
             <ResultsPane
               result={toolResult}
               isExecuting={isExecuting}
+              onReload={lastExecution ? handleReload : undefined}
             />
           </div>
         </main>

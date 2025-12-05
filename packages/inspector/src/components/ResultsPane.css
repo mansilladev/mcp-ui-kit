@@ -49,13 +49,21 @@
 }
 
 .tab.active {
-  color: var(--accent-blue);
+  color: var(--white);
   border-bottom-color: var(--accent-blue);
 }
 
 .tab-badge {
-  font-size: 10px;
-  color: var(--accent-green);
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin-left: 5px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.tab-badge.active {
+  background: var(--accent-blue);
 }
 
 .results-actions {
@@ -152,7 +160,9 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .ui-frame {
@@ -169,7 +179,8 @@
 }
 
 .text-output pre {
-  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+    monospace;
   font-size: 13px;
   line-height: 1.6;
   color: var(--text-primary);

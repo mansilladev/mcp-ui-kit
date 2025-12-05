@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Wrench, Play, ChevronRight, Code2, FileJson } from 'lucide-react'
+import { Wrench, Play, Circle, CircleDot, Code2, FileJson } from 'lucide-react'
 import { Button } from './Button'
 import type { Tool } from '../App'
 import './ToolsPanel.css'
@@ -148,7 +148,7 @@ export function ToolsPanel({
                   className={`tool-item ${selectedTool?.name === tool.name ? 'selected' : ''}`}
                   onClick={() => onSelectTool(tool)}
                 >
-                  <ChevronRight size={14} className="tool-chevron" />
+                  {selectedTool?.name === tool.name ? <CircleDot size={14} className="tool-chevron" /> : <Circle size={14} className="tool-chevron" />}
                   <div className="tool-info">
                     <span className="tool-name">{tool.name}</span>
                     {tool.description && (
