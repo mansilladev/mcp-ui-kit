@@ -55,7 +55,7 @@ app.post('/mcp', async (req, res) => {
 
         server.registerTool(
             'weather_dashboard',
-            { description: 'Interactive weather dashboard showing current conditions and 5-day forecast for Oslo' },
+            { description: 'Interactive weather dashboard showing current conditions and 5-day forecast for Oslo', _meta: weatherDashboardUI.meta },
             async () => ({
                 content: [
                     {
@@ -76,6 +76,7 @@ app.post('/mcp', async (req, res) => {
             'stock_portfolio',
             {
                 description: 'Interactive stock portfolio dashboard. View real-time prices, charts, and analysis for your selected stocks.',
+                _meta: stockDashboardUI.meta,
                 inputSchema: {
                     symbols: z.array(z.string()).default(['AAPL', 'GOOGL', 'MSFT']),
                     timeframe: z.enum(['1D', '1W', '1M', '3M', '1Y']).default('1M'),

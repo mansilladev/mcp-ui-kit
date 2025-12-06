@@ -18,7 +18,8 @@ import { createUI } from 'mcp-ui-kit/server';
 const dashboardUI = createUI('my-dashboard', import.meta.resolve('./MyComponent.tsx'));
 
 server.registerTool('dashboard', {
-  description: 'Interactive dashboard'
+  description: 'Interactive dashboard',
+  _meta: dashboardUI.meta
 }, async () => ({
   content: [
     { type: 'text', text: 'Dashboard loaded' },
