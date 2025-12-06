@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { generateMockStockData } from './stock-utils';
-import { callTool, sendPrompt, useProps } from '@mcp-ui/library/ui';
+import { callTool, sendPrompt, useProps } from 'mcp-ui-kit/ui';
 
 
 // Types for props passed from the tool handler
