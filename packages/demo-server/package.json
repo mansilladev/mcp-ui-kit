@@ -6,7 +6,8 @@
   "scripts": {
     "start": "npx ts-node index.ts",
     "dev": "npx ts-node index.ts",
-    "watch": "npx nodemon --exec 'npx ts-node index.ts'"
+    "watch": "npx nodemon --exec 'npx ts-node index.ts'",
+    "build:library": "cd ../library && npm run build"
   },
   "dependencies": {
     "mcp-ui-kit": "*",

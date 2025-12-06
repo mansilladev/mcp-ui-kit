@@ -7,7 +7,6 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "npm run build --workspace=packages/library",
     "dev": "npm run start --workspace=demo-server & npm run dev --workspace=@mcp-ui-kit/inspector",
     "start": "npm run start --workspace=demo-server",
     "publish:library": "npm publish --workspace=packages/library"
