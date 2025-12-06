@@ -7,17 +7,16 @@
     "start": "npx ts-node index.ts",
     "dev": "npx ts-node index.ts",
     "watch": "npx nodemon --exec 'npx ts-node index.ts'",
-    "build:library": "cd ../library && npm run build"
+    "build:library": "cd ../library && npm run build",
+    "postinstall": "node -e \"try{require('esbuild')}catch(e){}\""
   },
   "dependencies": {
     "mcp-ui-kit": "*",
     "@modelcontextprotocol/sdk": "^1.23.0",
     "cors": "^2.8.5",
+    "esbuild": "^0.25.0",
     "express": "^5.1.0",
     "zod": "^3.24.0"
-  },
-  "optionalDependencies": {
-    "@esbuild/linux-x64": "^0.25.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
