@@ -152,13 +152,19 @@ const handleSessionRequest = async (req: express.Request, res: express.Response)
 app.get('/mcp', handleSessionRequest);
 app.delete('/mcp', handleSessionRequest);
 
-app.listen(port, () => {
-    console.log(`\n🚀 MCP UI Demo Server`);
-    console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
-    console.log(`📡 MCP endpoint: http://localhost:${port}/mcp`);
-    console.log(`\n📦 Available tools:`);
-    console.log(`   • weather_dashboard  - Simple UI, no params`);
-    console.log(`   • stock_portfolio    - Complex UI with inputSchema params`);
-    console.log(`   • get_stock_price    - Data-only, no UI`);
-    console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`);
-});
+// Only start server when running locally (not on Vercel)
+if (!process.env.VERCEL) {
+    app.listen(port, () => {
+        console.log(`\n🚀 MCP UI Demo Server`);
+        console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+        console.log(`📡 MCP endpoint: http://localhost:${port}/mcp`);
+        console.log(`\n📦 Available tools:`);
+        console.log(`   • weather_dashboard  - Simple UI, no params`);
+        console.log(`   • stock_portfolio    - Complex UI with inputSchema params`);
+        console.log(`   • get_stock_price    - Data-only, no UI`);
+        console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`);
+    });
+}
+
+// Export for Vercel
+export default app;
