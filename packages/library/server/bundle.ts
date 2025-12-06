@@ -40,14 +40,21 @@ export async function bundleComponent(entryPath: string): Promise<string> {
         result = await runBuild(entryPath);
         console.log('[mcp-ui-kit] First build succeeded');
     } catch (error) {
-        console.log('[mcp-ui-kit] First build failed:', error instanceof Error ? error.message : error);
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        const errorStack = error instanceof Error ? error.stack : '';
+        console.log('[mcp-ui-kit] ========== BUILD ERROR ==========');
+        console.log('[mcp-ui-kit] Error message:', errorMessage);
+        console.log('[mcp-ui-kit] Error stack:', errorStack);
+        console.log('[mcp-ui-kit] Full error:', JSON.stringify(error, Object.getOwnPropertyNames(error || {}), 2));
+        console.log('[mcp-ui-kit] ================================');
         
         // Handle esbuild service errors in serverless environments (Vercel, Lambda, etc.)
         // This happens when the serverless runtime freezes/stops the esbuild subprocess.
         const isServiceError = error instanceof Error && (
-            error.message.includes('service was stopped') ||
-            error.message.includes('service is no longer running') ||
-            error.message.includes('The service')
+            errorMessage.includes('service was stopped') ||
+            errorMessage.includes('service is no longer running') ||
+            errorMessage.includes('The service') ||
+            errorMessage.includes('could not be found')
         );
         console.log('[mcp-ui-kit] Is service error:', isServiceError);
         
