@@ -25,7 +25,7 @@ import { createUI } from 'mcp-ui-kit/server';
 
 const server = new McpServer({ name: 'my-server', version: '1.0.0' });
 
-const dashboardUI = createUI('my-dashboard', import.meta.resolve('./MyComponent.tsx'));
+const dashboardUI = createUI('my-dashboard', import.meta.resolve('./Dashboard.tsx'));
 
 server.registerTool(
   'dashboard',
@@ -68,7 +68,11 @@ server.registerTool(
 
 ## Client Usage
 
+The file passed to `createUI()` must render a component to the `#root` element:
+
 ```tsx
+// StockDashboard.tsx
+import { createRoot } from 'react-dom/client';
 import { sendPrompt, callTool, useProps } from 'mcp-ui-kit/ui';
 
 function StockDashboard() {
@@ -80,27 +84,35 @@ function StockDashboard() {
       {symbols.map(symbol => (
         <div key={symbol}>
           <span>{symbol}</span>
-          <button onClick={() => sendPrompt(`Analyze ${symbol} over ${timeframe}`)}>Analyze</button>
-          <button onClick={() => callTool('get_stock_price', { symbol })}>Refresh</button>
+          <button onClick={() => sendPrompt(`Analyze ${symbol} over ${timeframe}`)}>
+            Analyze
+          </button>
+          <button onClick={() => callTool('get_stock_price', { symbol })}>
+            Refresh
+          </button>
         </div>
       ))}
     </div>
   );
 }
+
+// Render to DOM
+createRoot(document.getElementById('root')!).render(<StockDashboard />);
 ```
 
 ## API
 
 ### Server (`mcp-ui-kit/server`)
 
-**`createUI(name, entryUrl)`** — Creates a UI component
+**`createUI(name, componentPath)`** — Creates a UI component
+- `componentPath`: Path to a `.tsx` file that renders to `#root`
 - Returns `{ meta, component(opts?) }`
-- `opts.props`: Data passed to your React component
+- `opts.props`: Data passed to your React component via `useProps()`
 - `opts.frameSize`: `[width, height]` e.g. `['700px', '500px']`
 
 ```typescript
-createUI('dashboard', import.meta.resolve('./MyComponent.tsx'));  // ESM
-createUI('dashboard', require.resolve('./MyComponent.tsx'));       // CommonJS
+createUI('dashboard', import.meta.resolve('./Dashboard.tsx'));  // ESM
+createUI('dashboard', require.resolve('./Dashboard.tsx'));       // CommonJS
 ```
 
 ### UI (`mcp-ui-kit/ui`)

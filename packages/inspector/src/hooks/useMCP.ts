@@ -5,10 +5,13 @@ interface UseMCPReturn {
   isConnected: boolean
   isConnecting: boolean
   sessionId: string | null
+  isStateless: boolean
   tools: Tool[]
+  isRefreshing: boolean
   error: string | null
   connect: (serverUrl: string) => Promise<void>
   disconnect: () => void
+  refreshTools: () => Promise<void>
   callTool: (toolName: string, params: Record<string, unknown>) => Promise<{
     textContent: string
     htmlContent: string | null
@@ -43,10 +46,13 @@ export function useMCP(): UseMCPReturn {
   const [isConnected, setIsConnected] = useState(false)
   const [isConnecting, setIsConnecting] = useState(false)
   const [sessionId, setSessionId] = useState<string | null>(null)
+  const [isStateless, setIsStateless] = useState(false)
   const [tools, setTools] = useState<Tool[]>([])
+  const [isRefreshing, setIsRefreshing] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  
+
   const serverUrlRef = useRef<string>('')
+  const sessionIdRef = useRef<string | null>(null)
 
   const connect = useCallback(async (serverUrl: string) => {
     setIsConnecting(true)
@@ -81,16 +87,28 @@ export function useMCP(): UseMCPReturn {
         throw new Error(initResult?.error?.message || 'Failed to initialize')
       }
 
+      // Track whether this is a stateless server (no session ID)
+      const serverIsStateless = !newSessionId
       setSessionId(newSessionId)
+      sessionIdRef.current = newSessionId
+      setIsStateless(serverIsStateless)
+
+      // Helper to build headers (only include session ID if present)
+      const buildHeaders = () => {
+        const headers: Record<string, string> = {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json, text/event-stream',
+        }
+        if (newSessionId) {
+          headers['mcp-session-id'] = newSessionId
+        }
+        return headers
+      }
 
       // Send initialized notification
       await fetch(serverUrl, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json, text/event-stream',
-          'mcp-session-id': newSessionId || '',
-        },
+        headers: buildHeaders(),
         body: JSON.stringify({
           jsonrpc: '2.0',
           method: 'notifications/initialized',
@@ -100,11 +118,7 @@ export function useMCP(): UseMCPReturn {
       // List tools
       const toolsResponse = await fetch(serverUrl, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json, text/event-stream',
-          'mcp-session-id': newSessionId || '',
-        },
+        headers: buildHeaders(),
         body: JSON.stringify({
           jsonrpc: '2.0',
           id: 2,
@@ -125,6 +139,7 @@ export function useMCP(): UseMCPReturn {
       setError(err instanceof Error ? err.message : 'Connection failed')
       setIsConnected(false)
       setSessionId(null)
+      setIsStateless(false)
       setTools([])
     } finally {
       setIsConnecting(false)
@@ -134,22 +149,64 @@ export function useMCP(): UseMCPReturn {
   const disconnect = useCallback(() => {
     setIsConnected(false)
     setSessionId(null)
+    sessionIdRef.current = null
+    setIsStateless(false)
     setTools([])
     setError(null)
   }, [])
 
+  const refreshTools = useCallback(async () => {
+    if (!isConnected) return
+
+    setIsRefreshing(true)
+    try {
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json, text/event-stream',
+      }
+      if (sessionIdRef.current) {
+        headers['mcp-session-id'] = sessionIdRef.current
+      }
+
+      const toolsResponse = await fetch(serverUrlRef.current, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          id: Date.now(),
+          method: 'tools/list',
+          params: {},
+        }),
+      })
+
+      const toolsText = await toolsResponse.text()
+      const toolsResult = parseSSE(toolsText) as { result?: { tools: Tool[] }; error?: { message: string } }
+
+      if (toolsResult?.result?.tools) {
+        setTools(toolsResult.result.tools)
+      }
+    } finally {
+      setIsRefreshing(false)
+    }
+  }, [isConnected])
+
   const callTool = useCallback(async (toolName: string, params: Record<string, unknown>) => {
-    if (!sessionId) {
+    if (!isConnected) {
       throw new Error('Not connected')
+    }
+
+    // Build headers - only include session ID if present (stateful server)
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json, text/event-stream',
+    }
+    if (sessionId) {
+      headers['mcp-session-id'] = sessionId
     }
 
     const response = await fetch(serverUrlRef.current, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json, text/event-stream',
-        'mcp-session-id': sessionId,
-      },
+      headers,
       body: JSON.stringify({
         jsonrpc: '2.0',
         id: Date.now(),
@@ -195,16 +252,19 @@ export function useMCP(): UseMCPReturn {
       htmlContent,
       isError: false,
     }
-  }, [sessionId])
+  }, [isConnected, sessionId])
 
   return {
     isConnected,
     isConnecting,
     sessionId,
+    isStateless,
     tools,
+    isRefreshing,
     error,
     connect,
     disconnect,
+    refreshTools,
     callTool,
   }
 }

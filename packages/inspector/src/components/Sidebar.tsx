@@ -1,4 +1,4 @@
-import { Server, Plug, PlugZap, AlertCircle } from 'lucide-react'
+import { Server, Plug, PlugZap, AlertCircle, Zap } from 'lucide-react'
 import { Button } from './Button'
 import './Sidebar.css'
 
@@ -8,6 +8,7 @@ interface SidebarProps {
   isConnected: boolean
   isConnecting: boolean
   sessionId: string | null
+  isStateless: boolean
   onConnect: () => void
   error: string | null
 }
@@ -18,6 +19,7 @@ export function Sidebar({
   isConnected,
   isConnecting,
   sessionId,
+  isStateless,
   onConnect,
   error
 }: SidebarProps) {
@@ -63,10 +65,22 @@ export function Sidebar({
             </div>
           )}
 
-          {isConnected && sessionId && (
+          {isConnected && (
             <div className="session-info">
-              <div className="session-label">Session ID</div>
-              <code className="session-id">{sessionId.slice(0, 26)}...</code>
+              {isStateless ? (
+                <>
+                  <div className="session-label">Mode</div>
+                  <div className="stateless-badge">
+                    <Zap size={12} />
+                    <span>Stateless</span>
+                  </div>
+                </>
+              ) : sessionId ? (
+                <>
+                  <div className="session-label">Session ID</div>
+                  <code className="session-id">{sessionId.slice(0, 26)}...</code>
+                </>
+              ) : null}
             </div>
           )}
         </div>

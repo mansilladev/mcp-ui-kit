@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Wrench, Play, Circle, CircleDot, Code2, FileJson } from 'lucide-react'
+import { Wrench, Play, Circle, CircleDot, Code2, FileJson, RefreshCw } from 'lucide-react'
 import { Button } from './Button'
 import type { Tool } from '../App'
 import './ToolsPanel.css'
@@ -9,8 +9,10 @@ interface ToolsPanelProps {
   selectedTool: Tool | null
   onSelectTool: (tool: Tool | null) => void
   onExecuteTool: (toolName: string, params: Record<string, unknown>) => void
+  onRefreshTools: () => void
   isConnected: boolean
   isExecuting: boolean
+  isRefreshing: boolean
 }
 
 export function ToolsPanel({
@@ -18,8 +20,10 @@ export function ToolsPanel({
   selectedTool,
   onSelectTool,
   onExecuteTool,
+  onRefreshTools,
   isConnected,
-  isExecuting
+  isExecuting,
+  isRefreshing
 }: ToolsPanelProps) {
   const [params, setParams] = useState<Record<string, string>>({})
   const [jsonMode, setJsonMode] = useState(false)
@@ -62,12 +66,14 @@ export function ToolsPanel({
       const props = selectedTool.inputSchema?.properties || {}
 
       for (const [key, value] of Object.entries(params)) {
-        if (!value && !props[key]?.default) continue
-
         const propType = props[key]?.type
 
+        // Skip empty optional fields (but always include if there's a value or it's required)
+        const isRequired = selectedTool.inputSchema?.required?.includes(key)
+        if (!value && !isRequired && !props[key]?.default) continue
+
         // Try to parse as JSON for arrays/objects
-        if (value.startsWith('[') || value.startsWith('{')) {
+        if (value && (value.startsWith('[') || value.startsWith('{'))) {
           try {
             finalParams[key] = JSON.parse(value)
             continue
@@ -78,7 +84,7 @@ export function ToolsPanel({
 
         // Convert to appropriate type
         if (propType === 'number' || propType === 'integer') {
-          finalParams[key] = Number(value)
+          finalParams[key] = value ? Number(value) : undefined
         } else if (propType === 'boolean') {
           finalParams[key] = value === 'true'
         } else {
@@ -128,6 +134,16 @@ export function ToolsPanel({
         <Wrench size={16} />
         <span>Tools</span>
         <span className="tool-count">{tools.length}</span>
+        {isConnected && (
+          <button
+            className={`refresh-button ${isRefreshing ? 'refreshing' : ''}`}
+            onClick={onRefreshTools}
+            disabled={isRefreshing}
+            title="Refresh tools"
+          >
+            <RefreshCw size={14} />
+          </button>
+        )}
       </div>
 
       <div className="tools-content">

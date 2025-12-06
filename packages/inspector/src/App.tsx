@@ -34,9 +34,12 @@ function App() {
     isConnected,
     isConnecting,
     sessionId,
+    isStateless,
     tools,
+    isRefreshing,
     connect,
     disconnect,
+    refreshTools,
     callTool,
     error
   } = useMCP()
@@ -113,6 +116,7 @@ function App() {
           isConnected={isConnected}
           isConnecting={isConnecting}
           sessionId={sessionId}
+          isStateless={isStateless}
           onConnect={handleConnect}
           error={error}
         />
@@ -124,8 +128,10 @@ function App() {
               selectedTool={selectedTool}
               onSelectTool={setSelectedTool}
               onExecuteTool={handleExecuteTool}
+              onRefreshTools={refreshTools}
               isConnected={isConnected}
               isExecuting={isExecuting}
+              isRefreshing={isRefreshing}
             />
 
             <ResultsPane
