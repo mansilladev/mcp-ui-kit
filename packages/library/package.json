@@ -49,14 +49,6 @@
     "@mcp-ui/server": "^5.15.0",
     "esbuild": "^0.25.0"
   },
-  "optionalDependencies": {
-    "@esbuild/linux-x64": "^0.25.0",
-    "@esbuild/linux-arm64": "^0.25.0",
-    "@esbuild/darwin-x64": "^0.25.0",
-    "@esbuild/darwin-arm64": "^0.25.0",
-    "@esbuild/win32-x64": "^0.25.0",
-    "@esbuild/win32-arm64": "^0.25.0"
-  },
   "peerDependencies": {
     "react": ">=18.0.0",
     "react-dom": ">=18.0.0"

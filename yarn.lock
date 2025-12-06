@@ -167,7 +167,7 @@
   dependencies:
     "@jridgewell/trace-mapping" "0.3.9"
 
-"@esbuild/darwin-x64@^0.25.0", "@esbuild/darwin-x64@0.25.12":
+"@esbuild/darwin-x64@0.25.12":
   version "0.25.12"
   resolved "https://registry.npmjs.org/@esbuild/darwin-x64/-/darwin-x64-0.25.12.tgz"
   integrity sha512-HQ9ka4Kx21qHXwtlTUVbKJOAnmG1ipXhdWTmNXiPzPfWKpXqASVcWdnf2bnL73wgjNrFXAa3yYvBSd9pzfEIpA==
@@ -659,6 +659,8 @@ debug@^4, debug@^4.1.0, debug@^4.3.1, debug@^4.3.5, debug@^4.4.0, debug@^4.4.3:
     express "^5.1.0"
     mcp-ui-kit "*"
     zod "^3.24.0"
+  optionalDependencies:
+    "@esbuild/linux-x64" "^0.25.0"
 
 depd@^2.0.0, depd@~2.0.0:
   version "2.0.0"
@@ -1039,8 +1041,6 @@ mcp-ui-kit@*, "mcp-ui-kit@file:/Users/fedjens/projects/mcp-ui-kit/packages/libra
   resolved "file:packages/library"
   dependencies:
     "@mcp-ui/server" "^5.15.0"
-    esbuild-wasm "^0.25.0"
-  optionalDependencies:
     esbuild "^0.25.0"
 
 media-typer@^1.1.0:

@@ -28,7 +28,7 @@ export async function bundleComponent(entryPath: string): Promise<string> {
     }
 
     let result: esbuild.BuildResult<{ write: false }>;
-
+    
     try {
         result = await runBuild(entryPath);
     } catch (error) {
