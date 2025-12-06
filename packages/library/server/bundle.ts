@@ -34,14 +34,14 @@ export async function bundleComponent(entryPath: string): Promise<string> {
     } catch (error) {
         // Handle esbuild service errors in serverless environments (Vercel, Lambda, etc.)
         // This happens when the serverless runtime freezes/stops the esbuild subprocess.
-        // Error messages vary: "service was stopped", "service is no longer running", etc.
-        // esbuild automatically restarts its service on the next call, so we just retry.
         const isServiceError = error instanceof Error && (
             error.message.includes('service was stopped') ||
             error.message.includes('service is no longer running') ||
             error.message.includes('The service')
         );
         if (isServiceError) {
+            // Force stop the dead service, then retry - esbuild will start fresh
+            await esbuild.stop();
             result = await runBuild(entryPath);
         } else {
             throw error;
