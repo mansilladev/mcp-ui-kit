@@ -28,14 +28,20 @@ export async function bundleComponent(entryPath: string): Promise<string> {
     }
 
     let result: esbuild.BuildResult<{ write: false }>;
-    
+
     try {
         result = await runBuild(entryPath);
     } catch (error) {
-        // Handle "The service was stopped" error in serverless environments (Vercel, Lambda, etc.)
+        // Handle esbuild service errors in serverless environments (Vercel, Lambda, etc.)
         // This happens when the serverless runtime freezes/stops the esbuild subprocess.
+        // Error messages vary: "service was stopped", "service is no longer running", etc.
         // esbuild automatically restarts its service on the next call, so we just retry.
-        if (error instanceof Error && error.message.includes('service was stopped')) {
+        const isServiceError = error instanceof Error && (
+            error.message.includes('service was stopped') ||
+            error.message.includes('service is no longer running') ||
+            error.message.includes('The service')
+        );
+        if (isServiceError) {
             result = await runBuild(entryPath);
         } else {
             throw error;
