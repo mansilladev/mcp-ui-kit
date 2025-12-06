@@ -3,6 +3,8 @@ import { Sidebar } from './components/Sidebar'
 import { ToolsPanel } from './components/ToolsPanel'
 import { ResultsPane } from './components/ResultsPane'
 import { useMCP } from './hooks/useMCP'
+import { Analytics } from '@vercel/analytics/next';
+
 import './App.css'
 
 export type Tool = {
@@ -142,6 +144,7 @@ function App() {
           </div>
         </main>
       </div>
+      <Analytics />
     </div>
   )
 }
