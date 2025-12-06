@@ -1,8 +1,7 @@
 # MCP UI Kit
 
-Build interactive React UIs for MCP tools.
 
-## Why?
+Build interactive React UIs for MCP tools.
 
 The [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) enables AI assistants to interact with external tools and data. The [mcp-ui](https://github.com/anthropics/mcp-ui) project extends this with rich, interactive UI components that can be rendered directly in the AI chat.
 
@@ -142,6 +141,20 @@ function StockDashboard() {
   );
 }
 ```
+
+## MCP UI Inspector
+
+The MCP UI Inspector is a developer tool for testing MCP servers with UI capabilities. It provides a visual interface to:
+
+- **Connect to MCP servers** — Enter your server URL and establish a connection
+- **Browse available tools** — See all registered tools and their descriptions
+- **Configure parameters** — Fill in tool input schemas with a form UI or raw JSON
+- **Execute tools** — Run tools and see both text and UI responses
+- **Preview UI components** — View your React components rendered in real-time with full interactivity
+
+![MCP UI Inspector](docs/mcp-ui-inspector.png)
+
+The inspector makes it easy to iterate on your UI components without needing a full AI chat client. You can test `sendPrompt()` and `callTool()` interactions, verify props are passed correctly, and debug your components in isolation.
 
 ## API
 
