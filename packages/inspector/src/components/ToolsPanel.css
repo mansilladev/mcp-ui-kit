@@ -3,7 +3,7 @@
   display: flex;
   flex-direction: column;
   border-right: 1px solid var(--border-color);
-  min-width: 400px;
+  min-width: 300px;
   max-width: 50%;
 }
 
@@ -283,5 +283,57 @@
     max-width: none;
     border-right: none;
     border-bottom: 1px solid var(--border-color);
+  }
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+  .tools-panel {
+    min-width: 0;
+    max-width: none;
+  }
+
+  .tools-layout {
+    flex-direction: column;
+  }
+
+  .tools-list {
+    width: 100%;
+    min-width: 0;
+    max-height: 200px;
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+  }
+
+  .tool-item {
+    padding: 12px 16px;
+  }
+
+  .tool-detail {
+    min-height: 300px;
+  }
+
+  .tool-detail-header {
+    padding: 12px 16px;
+  }
+
+  .tool-params {
+    padding: 12px 16px;
+  }
+
+  .tool-actions {
+    padding: 12px 16px;
+  }
+
+  .param-field input,
+  .param-field select {
+    font-size: 16px; /* Prevents zoom on iOS */
+    padding: 10px 12px;
+  }
+
+  .json-editor {
+    font-size: 14px;
+    min-height: 120px;
   }
 }

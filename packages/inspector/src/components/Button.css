@@ -59,3 +59,17 @@
     transform: rotate(360deg);
   }
 }
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .btn {
+    padding: 10px 14px;
+    font-size: 14px;
+    min-height: 44px;
+  }
+
+  .btn-ghost {
+    min-height: 36px;
+    padding: 6px;
+  }
+}

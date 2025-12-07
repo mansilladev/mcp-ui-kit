@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react'
+import { Menu, X } from 'lucide-react'
 import { Sidebar } from './components/Sidebar'
 import { ToolsPanel } from './components/ToolsPanel'
 import { ResultsPane } from './components/ResultsPane'
@@ -50,6 +51,7 @@ function App() {
   const [toolResult, setToolResult] = useState<ToolResult | null>(null)
   const [isExecuting, setIsExecuting] = useState(false)
   const [lastExecution, setLastExecution] = useState<{ toolName: string; params: Record<string, unknown> } | null>(null)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const handleConnect = useCallback(async () => {
     if (isConnected) {
@@ -93,6 +95,13 @@ function App() {
   return (
     <div className="app">
       <header className="header">
+        <button
+          className="mobile-menu-toggle"
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          aria-label={sidebarOpen ? 'Close menu' : 'Open menu'}
+        >
+          {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
+        </button>
         <div className="header-brand" onClick={() => window.location.reload()}>
           <h1>MCP UI Inspector</h1>
         </div>
@@ -100,18 +109,24 @@ function App() {
           {isConnected ? (
             <span className="status-badge connected">
               <span className="status-dot"></span>
-              Connected
+              <span className="status-text">Connected</span>
             </span>
           ) : (
             <span className="status-badge disconnected">
               <span className="status-dot"></span>
-              Disconnected
+              <span className="status-text">Disconnected</span>
             </span>
           )}
         </div>
       </header>
 
       <div className="main-layout">
+        {sidebarOpen && (
+          <div
+            className="sidebar-overlay"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
         <Sidebar
           serverUrl={serverUrl}
           onServerUrlChange={setServerUrl}
@@ -121,6 +136,8 @@ function App() {
           isStateless={isStateless}
           onConnect={handleConnect}
           error={error}
+          isOpen={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
         />
 
         <main className="content">

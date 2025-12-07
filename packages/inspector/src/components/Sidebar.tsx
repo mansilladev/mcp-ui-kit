@@ -11,6 +11,8 @@ interface SidebarProps {
   isStateless: boolean
   onConnect: () => void
   error: string | null
+  isOpen?: boolean
+  onClose?: () => void
 }
 
 export function Sidebar({
@@ -21,10 +23,18 @@ export function Sidebar({
   sessionId,
   isStateless,
   onConnect,
-  error
+  error,
+  isOpen,
+  onClose
 }: SidebarProps) {
+  const handleConnect = () => {
+    onConnect()
+    // Close sidebar on mobile after connecting
+    if (onClose) onClose()
+  }
+
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
       <div className="sidebar-section">
         <div className="sidebar-section-header">
           <Server size={16} />
@@ -46,7 +56,7 @@ export function Sidebar({
 
           <Button
             variant={isConnected ? 'default' : 'primary'}
-            onClick={onConnect}
+            onClick={handleConnect}
             loading={isConnecting}
             loadingText="Connecting..."
             icon={isConnected ? <PlugZap size={16} /> : <Plug size={16} />}
