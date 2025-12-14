@@ -1,5 +1,5 @@
-import { useEffect, useState, useRef, useCallback } from 'react'
-import { Monitor, FileText, AlertTriangle, Maximize2, Minimize2, RotateCw, Radio, Trash2, Timer, Package } from 'lucide-react'
+import { useEffect, useState, useRef } from 'react'
+import { Monitor, FileText, AlertTriangle, Maximize2, Minimize2, RotateCw, Radio, Timer, Package } from 'lucide-react'
 import { Button } from './Button'
 import type { ToolResult } from '../App'
 import './ResultsPane.css'
@@ -58,11 +58,6 @@ export function ResultsPane({ result, isExecuting, onReload }: ResultsPaneProps)
 
     window.addEventListener('message', handleMessage)
     return () => window.removeEventListener('message', handleMessage)
-  }, [])
-
-  const clearEvents = useCallback(() => {
-    setEvents([])
-    eventIdRef.current = 0
   }, [])
 
   useEffect(() => {
